@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "prettier": "prettier {*.*,**/*.*} --write",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",

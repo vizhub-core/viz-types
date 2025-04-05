@@ -40,6 +40,107 @@ The package provides several core types:
 - **VizContent**: The complete content of a visualization
 - **VizLicense**: SPDX license identifier
 
+### FileCollection
+
+A simple collection of files where:
+- Keys are file names (e.g., "index.html")
+- Values are file contents (e.g., "<body>Hello</body>")
+- Used for scenarios requiring simple file operations without the complexity of a full VizFile structure
+
+```typescript
+type FileCollection = Record<string, string>;
+```
+
+### VizFiles
+
+A collection of VizFile objects where:
+- Keys are unique file IDs (VizFileId), not file names or array indices
+- This design simplifies Operational Transformation with ShareDB when files are renamed or deleted
+- The file ID remains stable even when the file name changes or files are added/deleted
+
+```typescript
+type VizFiles = {
+  [fileId: VizFileId]: VizFile;
+};
+```
+
+### VizFileId
+
+A unique identifier for a file:
+- Represented as a random string
+- Provides stability for tracking files even when they're renamed or moved
+
+```typescript
+type VizFileId = string;
+```
+
+### VizFile
+
+Represents a single file with:
+- **name**: The file name (e.g., "index.html")
+- **text**: The text content of the file (e.g., "<body>Hello</body>")
+
+```typescript
+type VizFile = {
+  name: string;
+  text: string;
+};
+```
+
+### VizId
+
+A unique identifier for a visualization:
+- Common between Info and Content for a given visualization
+- Implemented as a UUID v4 string with dashes removed (for ease of URL copying)
+
+```typescript
+type VizId = string;
+```
+
+### VizLicense
+
+The license associated with a visualization:
+- Represented as an SPDX License Identifier
+- References the "Identifier" column in the SPDX license list (https://spdx.org/licenses/)
+
+```typescript
+type VizLicense = string;
+```
+
+### VizContent
+
+The complete content of a visualization:
+- **id**: The VizId that this content is associated with
+- **files**: The VizFiles in the visualization
+- **title**: The title of the visualization (same as Info.title)
+  - Tracked here so it can be versioned
+  - Restoring an old version should restore its old title
+  - Optional field
+- **height**: The customized height of the visualization in pixels
+  - Not defined if the user hasn't customized it
+  - If not defined, the default height is used
+  - Optional field
+- **license**: The customized license associated with this visualization
+  - Not defined if the user hasn't customized it
+  - Optional field
+- **isInteracting**: Indicates user interaction state
+  - `true` when the user is interacting via interactive code widgets (e.g., Alt+drag)
+    - Hot reloading is throttled when this is `true`
+  - `false` or `undefined` when they are not (e.g., normal typing)
+    - Hot reloading is debounced when this is `false`
+  - Optional field
+
+```typescript
+type VizContent = {
+  id: VizId;
+  files: VizFiles;
+  title?: string;
+  height?: number;
+  license?: VizLicense;
+  isInteracting?: boolean;
+};
+```
+
 ## Design Philosophy
 
 The types in this package are designed with specific considerations:

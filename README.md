@@ -12,7 +12,7 @@ A TypeScript package that provides common type definitions for the VizHub ecosys
 ## Installation
 
 ```bash
-npm install viz-types
+npm install @vizhub/viz-types
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ npm install viz-types
 Import the types you need in your TypeScript files:
 
 ```typescript
-import { VizFile, VizFiles, VizContent, VizId } from 'viz-types';
+import { VizFile, VizFiles, VizContent, VizId } from '@vizhub/viz-types';
 
 // Use the types in your code
 const myFile: VizFile = {

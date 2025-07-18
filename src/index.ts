@@ -102,6 +102,13 @@ export type VizChat = {
 
   // Timestamp when the chat was last updated
   updatedAt: VizTimestamp;
+
+  // The AI scratchpad content
+  aiScratchpad?: string;
+
+  // The AI streaming content
+  // The AI status, for displaying progress
+  aiStatus?: string;
 };
 
 // VizChats

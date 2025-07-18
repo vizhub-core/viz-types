@@ -12,7 +12,7 @@ export type FileCollection = Record<string, string>;
 //  * Keys are _not_ file names or array indices,
 //    because based on past experience, that
 //    leads to very difficult frontend logic around
-//    Operational Transformation with ShareDB in the 
+//    Operational Transformation with ShareDB in the
 //    case that a file is renamed or deleted.
 //  * When the file name changes, or files are added/deleted,
 //    this ID stays the same, simplifying things re:OT.
@@ -24,7 +24,6 @@ export type VizFiles = {
 //  * A unique ID for a file.
 //  * This is a random string.
 export type VizFileId = string;
-
 
 // VizFile
 //  * A file with `name` and `text`.
@@ -49,6 +48,70 @@ export type VizId = string;
 //  * This is an SPDX License Identifier.
 //  * See "Identifier" column in https://spdx.org/licenses/
 export type VizLicense = string;
+
+// VizTimestamp
+//  * A timestamp down to the second.
+//  * (Unix epoch milliseconds) / 1000
+export type VizTimestamp = number;
+
+// VizChatId
+//  * A unique ID for a chat.
+//  * This is a random string.
+export type VizChatId = string;
+
+// VizChatMessageRole
+//  * The role of a message in a chat.
+export type VizChatMessageRole = "user" | "assistant";
+
+// VizChatMessageId
+//  * A unique ID for a chat message.
+export type VizChatMessageId = string;
+
+// VizChatMessage
+//  * A single message in a chat conversation.
+//  * Based on LangChain's message structure.
+export type VizChatMessage = {
+  // The role of the message sender
+  role: VizChatMessageRole;
+
+  // The text content of the message
+  content: string;
+
+  // Timestamp when the message was created
+  timestamp: VizTimestamp;
+
+  // Optional metadata
+  id?: VizChatMessageId;
+};
+
+// VizChat
+//  * A single AI chat conversation.
+//  * Contains an ordered array of messages representing the conversation history.
+export type VizChat = {
+  // Unique identifier for this chat
+  id: VizChatId;
+
+  // The title/name of this chat conversation
+  title?: string;
+
+  // Ordered array of messages in the conversation
+  messages: VizChatMessage[];
+
+  // Timestamp when the chat was created
+  createdAt: VizTimestamp;
+
+  // Timestamp when the chat was last updated
+  updatedAt: VizTimestamp;
+};
+
+// VizChats
+//  * A collection of AI chats associated with a viz.
+//  * Keys are chat IDs.
+//  * Values are chat objects.
+//  * Similar structure to VizFiles for consistency.
+export type VizChats = {
+  [chatId: VizChatId]: VizChat;
+};
 
 // VizContent
 //  * The content of a viz.
@@ -86,4 +149,8 @@ export type VizContent = {
   //   * `false` or `undefined` when they are not (e.g. normal typing)
   //     * Hot reloading is debounced when this is `false`.
   isInteracting?: boolean;
+
+  // `chats`
+  //   * The AI chats associated with this viz.
+  chats?: VizChats;
 };

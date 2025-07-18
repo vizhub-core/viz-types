@@ -20,12 +20,12 @@ npm install @vizhub/viz-types
 Import the types you need in your TypeScript files:
 
 ```typescript
-import { VizFile, VizFiles, VizContent, VizId } from '@vizhub/viz-types';
+import { VizFile, VizFiles, VizContent, VizId } from "@vizhub/viz-types";
 
 // Use the types in your code
 const myFile: VizFile = {
-  name: 'index.html',
-  text: '<body>Hello World</body>'
+  name: "index.html",
+  text: "<body>Hello World</body>",
 };
 ```
 
@@ -37,12 +37,18 @@ The package provides several core types:
 - **VizFiles**: A collection of VizFile objects with unique IDs
 - **VizFile**: Represents a single file with name and content
 - **VizId**: Unique identifier for a visualization
-- **VizContent**: The complete content of a visualization
 - **VizLicense**: SPDX license identifier
+- **VizTimestamp**: Unix timestamp for tracking time
+- **VizChats**: A collection of AI chat conversations
+- **VizChat**: A single AI chat conversation
+- **VizChatMessage**: Individual messages within a chat
+- **VizChatMessageId**: Unique identifier for a chat message
+- **VizContent**: The complete content of a visualization
 
 ### FileCollection
 
 A simple collection of files where:
+
 - Keys are file names (e.g., "index.html")
 - Values are file contents (e.g., "<body>Hello</body>")
 - Used for scenarios requiring simple file operations without the complexity of a full VizFile structure
@@ -54,6 +60,7 @@ type FileCollection = Record<string, string>;
 ### VizFiles
 
 A collection of VizFile objects where:
+
 - Keys are unique file IDs (VizFileId), not file names or array indices
 - This design simplifies Operational Transformation with ShareDB when files are renamed or deleted
 - The file ID remains stable even when the file name changes or files are added/deleted
@@ -67,6 +74,7 @@ type VizFiles = {
 ### VizFileId
 
 A unique identifier for a file:
+
 - Represented as a random string
 - Provides stability for tracking files even when they're renamed or moved
 
@@ -77,6 +85,7 @@ type VizFileId = string;
 ### VizFile
 
 Represents a single file with:
+
 - **name**: The file name (e.g., "index.html")
 - **text**: The text content of the file (e.g., "<body>Hello</body>")
 
@@ -90,6 +99,7 @@ type VizFile = {
 ### VizId
 
 A unique identifier for a visualization:
+
 - Common between Info and Content for a given visualization
 - Implemented as a UUID v4 string with dashes removed (for ease of URL copying)
 
@@ -100,6 +110,7 @@ type VizId = string;
 ### VizLicense
 
 The license associated with a visualization:
+
 - Represented as an SPDX License Identifier
 - References the "Identifier" column in the SPDX license list (https://spdx.org/licenses/)
 
@@ -107,9 +118,108 @@ The license associated with a visualization:
 type VizLicense = string;
 ```
 
+### VizTimestamp
+
+A timestamp down to the second:
+
+- Represented as (Unix epoch milliseconds) / 1000
+- Used for tracking creation and modification times
+
+```typescript
+type VizTimestamp = number;
+```
+
+### VizChatId
+
+A unique identifier for a chat:
+
+- Represented as a random string
+- Provides stability for tracking chat conversations
+
+```typescript
+type VizChatId = string;
+```
+
+### VizChatMessageRole
+
+The role of a message in a chat conversation:
+
+- Based on LangChain's unified message types
+- Supports "system", "user", "assistant", and "tool" roles
+
+```typescript
+type VizChatMessageRole = "system" | "user" | "assistant" | "tool";
+```
+
+### VizChatMessageId
+
+A unique identifier for a chat message:
+
+- Represented as a string
+- Used to track individual messages within chat conversations
+
+```typescript
+type VizChatMessageId = string;
+```
+
+### VizChatMessage
+
+A single message in a chat conversation:
+
+- **role**: The role of the message sender (system/user/assistant/tool)
+- **content**: The text content of the message
+- **timestamp**: When the message was created (VizTimestamp)
+- **id**: Optional chat message identifier
+
+```typescript
+type VizChatMessage = {
+  role: VizChatMessageRole;
+  content: string;
+  timestamp: VizTimestamp;
+  id?: VizChatMessageId;
+};
+```
+
+### VizChat
+
+A single AI chat conversation:
+
+- **id**: Unique identifier for this chat (VizChatId)
+- **title**: Optional title/name of the chat conversation
+- **messages**: Ordered array of messages in the conversation
+  - Follows LangChain pattern: system first (optional), then alternating user → assistant → tool
+- **createdAt**: Timestamp when the chat was created
+- **updatedAt**: Timestamp when the chat was last updated
+
+```typescript
+type VizChat = {
+  id: VizChatId;
+  title?: string;
+  messages: VizChatMessage[];
+  createdAt: VizTimestamp;
+  updatedAt: VizTimestamp;
+};
+```
+
+### VizChats
+
+A collection of AI chats associated with a visualization:
+
+- Keys are unique chat IDs (VizChatId)
+- Values are chat objects (VizChat)
+- Similar structure to VizFiles for consistency
+- Designed to work with LangChain's conversation patterns
+
+```typescript
+type VizChats = {
+  [chatId: VizChatId]: VizChat;
+};
+```
+
 ### VizContent
 
 The complete content of a visualization:
+
 - **id**: The VizId that this content is associated with
 - **files**: The VizFiles in the visualization
 - **title**: The title of the visualization (same as Info.title)
@@ -129,6 +239,9 @@ The complete content of a visualization:
   - `false` or `undefined` when they are not (e.g., normal typing)
     - Hot reloading is debounced when this is `false`
   - Optional field
+- **chats**: The AI chats associated with this visualization
+  - Collection of VizChat objects for AI-powered conversations
+  - Optional field
 
 ```typescript
 type VizContent = {
@@ -138,6 +251,7 @@ type VizContent = {
   height?: number;
   license?: VizLicense;
   isInteracting?: boolean;
+  chats?: VizChats;
 };
 ```
 
@@ -153,11 +267,11 @@ The types in this package are designed with specific considerations:
 
 This package is a core dependency for the following VizHub projects:
 
-* [viz-utils](https://github.com/vizhub-core/viz-utils) - Utility functions for the VizHub ecosystem
-* [vizhub-runtime](https://github.com/vizhub-core/vizhub-runtime) - Runtime environment for VizHub visualizations
-* [editcodewithai](https://github.com/vizhub-core/editcodewithai) - AI-powered code editor for VizHub
-* [vzcode](https://github.com/vizhub-core/vzcode) - Manual code editor for VizHub
-* [vizhub](https://github.com/vizhub-core/vizhub) - Main VizHub application
+- [viz-utils](https://github.com/vizhub-core/viz-utils) - Utility functions for the VizHub ecosystem
+- [vizhub-runtime](https://github.com/vizhub-core/vizhub-runtime) - Runtime environment for VizHub visualizations
+- [editcodewithai](https://github.com/vizhub-core/editcodewithai) - AI-powered code editor for VizHub
+- [vzcode](https://github.com/vizhub-core/vzcode) - Manual code editor for VizHub
+- [vizhub](https://github.com/vizhub-core/vizhub) - Main VizHub application
 
 ## Contributing
 

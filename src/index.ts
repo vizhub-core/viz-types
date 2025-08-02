@@ -150,12 +150,13 @@ export type VizContent = {
   license?: VizLicense;
 
   // `isInteracting`
-  //   * `true` when the user is interacting
-  //     via interactive code widgets (e.g. Alt+drag)
-  //     * Hot reloading is throttled when this is `true`.
-  //   * `false` or `undefined` when they are not (e.g. normal typing)
-  //     * Hot reloading is debounced when this is `false`.
+  // * `true` when the user is interacting
+  //   via interactive code widgets (e.g. Alt+drag)
   isInteracting?: boolean;
+
+  // `runId`
+  // * A unique ID for the current run of the viz.
+  runId?: string;
 
   // `chats`
   //   * The AI chats associated with this viz.

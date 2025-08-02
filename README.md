@@ -239,6 +239,9 @@ The complete content of a visualization:
   - `false` or `undefined` when they are not (e.g., normal typing)
     - Hot reloading is debounced when this is `false`
   - Optional field
+- **runId**: A unique identifier for the current run of the visualization
+  - Used to track and manage visualization execution instances
+  - Optional field
 - **chats**: The AI chats associated with this visualization
   - Collection of VizChat objects for AI-powered conversations
   - Optional field

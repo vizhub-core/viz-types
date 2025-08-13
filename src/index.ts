@@ -109,6 +109,10 @@ export type VizChat = {
   // The AI streaming content
   // The AI status, for displaying progress
   aiStatus?: string;
+
+  // The current message draft being typed by the user
+  // Enables collaborative editing within the AI prompt text area
+  currentMessageDraft?: string;
 };
 
 // VizChats

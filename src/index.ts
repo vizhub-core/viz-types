@@ -112,7 +112,7 @@ export type VizChat = {
 
   // The current message draft being typed by the user
   // Enables collaborative editing within the AI prompt text area
-  currentMessageDraft?: string;
+  currentChatDraft?: string;
 };
 
 // VizChats
